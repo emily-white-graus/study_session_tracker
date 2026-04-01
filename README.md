@@ -2,27 +2,70 @@
 
 Project built with fastapi and postgresql for tracking study sessions comfortably and tracking your study progress with stats.🤓☝
 
-## Entity
 
-### Studysession
+## What it does
 
-A study session represents one study activity.
+- create study sessions
+- store sessions in PostgreSQL
+- list saved sessions
+- calculate study statistics
+- generate an AI summary with OpenAI
+- serve a small web interface from the backend
 
-fields:
+## Tech stack
 
-* `id` --> unique integer id
-* `subject` --> subject studied
-* `duration_minutes` --> duration of the session in minutes
-* `notes` --> optional notes about the session
-* `studied_at` --> timestamp of when the session was created
+- FastAPI
+- SQLAlchemy
+- PostgreSQL
+- OpenAI API
+- Docker
+- Google Cloud Run
+- Google Cloud SQL
 
-## API endpoints
+## Project structure
 
-### Create a study session
+```text
+app/
+  api/
+    router.py
+    schemas.py
+  clients/
+    openai_client.py
+  repositories/
+    models.py
+    session_repository.py
+  services/
+    session_service.py
+  static/
+    index.html
+  config.py
+  db.py
+  main.py
+```
+
+## Main features
+
+### Study session
+
+Each study session has:
+
+- `id`
+- `subject`
+- `duration_minutes`
+- `notes`
+- `studied_at`
+
+### API endpoints
+
+- `POST /sessions`
+- `GET /sessions`
+- `GET /sessions/{session_id}`
+- `GET /stats`
+- `GET /summary`
+
+## Example request
 
 `POST /sessions`
-
-example request body:
 
 ```json
 {
@@ -32,59 +75,61 @@ example request body:
 }
 ```
 
----
-
-### GET one study session by id
-
-`GET /sessions/{id}`
-
----
-
-### List all study sessions
-
-`GET /sessions`
-
----
-
-### GET study statistics
-
-`GET /stats`
-
-returns aggregated data:
-
-* total sessions
-* total minutes studied
-* minutes per subject
-* most studied subject
-
----
-
-### Generate AI study summary
-
-`GET /summary`
-
-this endpoint uses the openai api to analyze stored study sessions and generate a summary of the user's study activity.
-
-Example response:
+## Example summary response
 
 ```json
 {
-  "summary": "you studied a total of 5 hours this week, focusing mainly on math and programming. your most productive day was monday."
+  "summary": "The student completed 4 study sessions totaling 230 minutes."
 }
 ```
 
-## AI feature
+## Run locally
 
-The `/summary` endpoint integrates with openai to:
+1. create a virtual environment
+2. install dependencies
+3. add your environment variables
+4. start the server
 
-* detect patterns in study habits
-* generate human-readable summaries
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m uvicorn app.main:app --reload
+```
 
-## Also what is going to be used
+Open:
 
-* fastapi
-* sqlalchemy
-* postgresql
-* openai api
-* google cloud run
-* google cloud sql
+- `http://127.0.0.1:8000/`
+- `http://127.0.0.1:8000/docs`
+
+## Environment variables
+
+Create a `.env` file with:
+
+```env
+DATABASE_URL=your_database_url
+OPENAI_API_KEY=your_openai_api_key
+OPENAI_MODEL=gpt-5-mini
+```
+
+## Docker
+
+Build and run with:
+
+```bash
+docker build -t study-session-tracker .
+docker run --env-file .env -p 8080:8080 study-session-tracker
+```
+
+## Deployment
+
+This project is deployed on:
+
+- Google Cloud Run
+- Google Cloud SQL
+
+## Notes
+
+- the frontend is a static HTML page served by FastAPI
+- the backend handles the API, logic, database access, and AI summary
+- the `/summary` endpoint depends on a valid OpenAI API key
