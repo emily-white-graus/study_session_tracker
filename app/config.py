@@ -1,6 +1,7 @@
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# loads env settings
 class Settings(BaseSettings):
     database_url: str
     openai_api_key: str | None = None
@@ -9,4 +10,4 @@ class Settings(BaseSettings):
 
 @lru_cache
 def get_settings() -> Settings:
-    return Settings()
+    return Settings() # reuses one settngs object

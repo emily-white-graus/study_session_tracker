@@ -2,9 +2,11 @@ from datetime import datetime
 from sqlalchemy import DateTime, Integer, String, Text, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
+# base class for db tables
 class Base(DeclarativeBase):
     pass
 
+# study_sessions table
 class StudySessionORM(Base):
     __tablename__ = "study_sessions"
 
